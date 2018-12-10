@@ -157,12 +157,20 @@ type EXT struct {
 	Version string `yaml:"version,omitempty"`
 	// The provider of this extension descriptor
 	Provider string `yaml:"provider,omitempty"`
+	// A list of targets to which the MTA shall be deployed to
+	Targets interface{} `yaml:"targets,omitempty"`
 	// list of modules
 	Modules []*ModuleExt `yaml:"modules,omitempty"`
+	// Module type declarations
+	ModuleTypes []*ModuleTypes `yaml:"module-types,omitempty"`
 	// Resource declarations. Resources can be anything required to run the application which is not provided by the application itself
-	Resources []*ResourceExt `yaml:"resources,omitempty"`
+	Resources []*Resource `yaml:"resources,omitempty"`
+	// Resource type declarations
+	ResourceTypes []*ResourceTypes `yaml:"resource-types,omitempty"`
 	// Parameters can be used to steer the behavior of tools which interpret this descriptor
 	Parameters map[string]interface{} `yaml:"parameters,omitempty"`
+	// THE 'includes' ELEMENT IS ONLY RELEVANT FOR DEVELOPMENT DESCRIPTORS (PRIO TO BUILD), NOT FOR DEPLOYMENT DESCRIPTORS!
+	Includes []Includes `yaml:"includes,omitempty"`
 }
 
 // ModuleExt - modules section in MTA extension
@@ -179,6 +187,8 @@ type ModuleExt struct {
 	Parameters map[string]interface{} `yaml:"parameters,omitempty"`
 	// Build-parameters are specifically steering the behavior of build tools.
 	BuildParams map[string]interface{} `yaml:"build-parameters,omitempty"`
+	// THE 'includes' ELEMENT IS ONLY RELEVANT FOR DEVELOPMENT DESCRIPTORS (PRIO TO BUILD), NOT FOR DEPLOYMENT DESCRIPTORS!
+	Includes []Includes `yaml:"includes,omitempty"`
 }
 
 // ResourceExt - can be anything required to run the application which is not provided by the application itself.
@@ -188,4 +198,10 @@ type ResourceExt struct {
 	Parameters map[string]interface{} `yaml:"parameters,omitempty"`
 	// property names and values make up the configuration data which is to be provided to requiring modules at runtime
 	Properties map[string]interface{} `yaml:"properties,omitempty"`
+	// THE 'includes' ELEMENT IS ONLY RELEVANT FOR DEVELOPMENT DESCRIPTORS (PRIO TO BUILD), NOT FOR DEPLOYMENT DESCRIPTORS!
+	Includes []Includes `yaml:"includes,omitempty"`
+	// If a resource is declared to be active, it is allocated and bound according to declared requirements
+	Active bool `yaml:"active,omitempty"`
+	// list of names either matching a resource name or a name provided by another module within the same MTA
+	Requires []Requires `yaml:"requires,omitempty"`
 }
