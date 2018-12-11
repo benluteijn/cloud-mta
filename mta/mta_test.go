@@ -1,13 +1,12 @@
 package mta
 
 import (
-	"io/ioutil"
-	"os"
-	"path/filepath"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"gopkg.in/yaml.v2"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 )
 
 var _ = Describe("Mta", func() {
@@ -255,6 +254,21 @@ var _ = Describe("Mta", func() {
 		It("Invalid content", func() {
 			_, err := Unmarshal([]byte("wrong mta"))
 			Ω(err).Should(HaveOccurred())
+		})
+	})
+
+	var _ = Describe("YAML To JSON", func() {
+		It("Sanity", func() {
+			wd, err := os.Getwd()
+			Ω(err).Should(Succeed())
+			YamlContent, err := ioutil.ReadFile(filepath.Join(wd, "testdata", "mta.yaml"))
+			Ω(err).Should(Succeed())
+			//Converting YAML content to JSON content and generate a JSON file
+			YamlContent, err = YamlToJson("mta.json", YamlContent)
+			Ω(err).Should(Succeed())
+			JsonContent, err := ioutil.ReadFile(filepath.Join(wd, "testdata", "mta.json"))
+			Ω(err).Should(Succeed())
+			Ω(YamlContent).Should(MatchJSON(JsonContent))
 		})
 	})
 })
